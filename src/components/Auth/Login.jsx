@@ -19,7 +19,7 @@ const Login = ({ handleLogin }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:9999/api/c3/ser/login', formData);
+      const response = await axios.post('https://california-server.onrender.com/api/c3/ser/login', formData);
       localStorage.setItem('jwtToken', response.data.jwtToken);
       handleLogin();
       navigate('/profile');

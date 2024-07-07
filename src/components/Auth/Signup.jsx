@@ -26,7 +26,7 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:9999/api/c3/user/register', formData);
+      await axios.post('https://california-server.onrender.com/api/c3/user/register', formData);
       navigate('/'); // Redirect on success
     } catch (error) {
       console.error('Signup error:', error);

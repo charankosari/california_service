@@ -27,8 +27,8 @@ const Chat = ({ onClose }) => {
 
     try {
       const apiUrl = messages.length === 0
-        ? 'http://localhost:9999/api/c3/user/greetchat'
-        : 'http://localhost:9999/api/c3/user/chat';
+        ? 'https://california-server.onrender.com/api/c3/user/greetchat'
+        : 'https://california-server.onrender.com/api/c3/user/chat';
 
       const jwtToken = localStorage.getItem('jwtToken');
       if (!jwtToken) {
