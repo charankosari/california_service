@@ -1,102 +1,115 @@
-.profile-section {
-    height: 80vh;
-    background-color: #f4f5f7;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.profile-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.profile-card {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  position: relative;
+}
+
+.profile-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
+.edit-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.profile-info {
+  margin-top: 20px;
+  text-align: left;
+}
+
+.profile-info h4 {
+  margin-bottom: 10px;
+}
+
+.profile-info hr {
+  margin-bottom: 10px;
+}
+
+.profile-info p {
+  margin: 5px 0;
+}
+
+.profile-input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.edit-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.edit-buttons button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.edit-buttons button:first-child {
+  background-color: #007bff;
+  color: white;
+}
+
+.edit-buttons button:last-child {
+  background-color: #f44336;
+  color: white;
+}
+
+.signout-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #3498db;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
-  
-  .profile-container {
-    width: 60%;
-  }
-  
-  .profile-card {
-    display: flex;
-    border-radius: 0.5rem;
-    background-color: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-  }
-  
-  .profile-card-left {
-    background: linear-gradient(to right bottom, rgba(246, 211, 101, 1), rgba(253, 160, 133, 1));
-    text-align: center;
-    color: white;
-    padding: 2rem;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .profile-avatar {
-    width: 80px;
-    margin-bottom: 1rem;
-    border-radius: 50%;
-  }
-  
-  .profile-card-body {
-    padding: 2rem;
-    flex: 2;
-  }
-  
-  .profile-hr {
-    margin-top: 0;
-    margin-bottom: 1.5rem;
-  }
-  
-  .profile-info {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 1.5rem;
-  }
-  
-  .profile-info-item {
-    margin-bottom: 1rem;
-  }
-  
-  .text-muted {
-    color: #6c757d !important;
-  }
-  
-  .profile-actions {
-    display: flex;
-    gap: 1rem;
-  }
-  .loader {
-    --clr: #05A8AA;
-    --load-time: 1s;
-    outline: 5px solid var(--clr);
-    outline-offset: 5px;
-    position: absolute;
-    top: 50vh;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    overflow: hidden;
-    border-radius: 5rem;
-    width: 300px;
-    height: 50px; /* Adjust height if needed */
-  }
-  
-  .loader::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: var(--clr);
-    z-index: 2;
-    animation: loading var(--load-time) ease-in-out infinite;
-  }
-  
-  @keyframes loading {
-    0% {
-      width: 0%;
-    }
-    100% {
-      width: 100%;
-    }
-  }
-  
+}

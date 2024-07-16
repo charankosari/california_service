@@ -9,6 +9,7 @@ const Login = ({ handleLogin }) => {
     email: '',
     password: '',
   });
+  const url='http://localhost:9999'
 
   const [error, setError] = useState('');
 
@@ -19,7 +20,7 @@ const Login = ({ handleLogin }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('https://california-server.onrender.com/api/c3/ser/login', formData);
+      const response = await axios.post(`${url}/api/c3/ser/login`, formData);
       localStorage.setItem('jwtToken', response.data.jwtToken);
       handleLogin();
       navigate('/profile');

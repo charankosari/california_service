@@ -1,30 +1,35 @@
-import React, { useState, useEffect } from 'react';
-import './Profile.css';
-import axios from 'axios';
-import { FaRegEdit } from "react-icons/fa";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import "./Profile.css";
 
-const Profile = () => {
+const Profile = ({ login }) => {
   const [userData, setUserData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [avatarUrl, setAvatarUrl] = useState("");
+  const url = "http://localhost:9999";
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const jwtToken = localStorage.getItem('jwtToken');
+        const jwtToken = localStorage.getItem("jwtToken");
         if (!jwtToken) {
-          throw new Error('JWT token not found in localStorage');
+          throw new Error("JWT token not found in localStorage");
         }
-        
-        const response = await axios.get('https://california-server.onrender.com/api/c3/ser/me', {
+
+        const response = await axios.get(`${url}/api/c3/ser/me`, {
           headers: {
-            Authorization: `Bearer ${jwtToken}`
-          }
+            Authorization: `Bearer ${jwtToken}`,
+          },
         });
         setUserData(response.data.ser);
         setEditData(response.data.ser);
+        setAvatarUrl(response.data.ser.image || "");
+        setLoading(false);
       } catch (error) {
-        console.error('Error fetching user data:', error);
+        console.error("Error fetching user data:", error);
+        setLoading(false);
       }
     };
 
@@ -41,113 +46,160 @@ const Profile = () => {
 
   const handleSave = async () => {
     try {
-      const jwtToken = localStorage.getItem('jwtToken');
-      await axios.put('https://california-server.onrender.com/api/c3/user/me/profileupdate', editData, {
+      const jwtToken = localStorage.getItem("jwtToken");
+
+      const updatedData = {};
+
+      if (editData.name !== userData.name) {
+        updatedData.name = editData.name;
+      }
+      if (editData.email !== userData.email) {
+        updatedData.email = editData.email;
+      }
+      if (editData.number !== userData.number) {
+        updatedData.number = editData.number;
+      }
+      if (
+        editData.address !== userData.address ||
+        editData.pincode !== userData.pincode
+      ) {
+        updatedData.address = {
+          address: editData.address,
+          pincode: editData.pincode,
+        };
+      }
+      await axios.put(`${url}/api/c3/ser/me/profileupdate`, updatedData, {
         headers: {
-          Authorization: `Bearer ${jwtToken}`
-        }
+          Authorization: `Bearer ${jwtToken}`,
+        },
       });
-      setUserData(editData);
+
+      setUserData({ ...userData, ...updatedData });
       setIsEditing(false);
     } catch (error) {
-      console.error('Error updating user data:', error);
+      console.error("Error updating user data:", error);
     }
   };
 
+  const generateRandomAvatar = () => {
+    const randomSeed = Math.random().toString(36).substring(7);
+    setAvatarUrl(`https://api.multiavatar.com/${randomSeed}.svg`);
+  };
+
+  const handleSignout = () => {
+    localStorage.removeItem("jwtToken");
+    window.location.href = "/login";
+  };
+
+  if (loading) {
+    return (
+      <div className="loading">
+        <div className="spinner"></div>
+      </div>
+    );
+  }
+
   if (!userData) {
-    return <div className="loader"></div>
+    return <h2>No user data available</h2>;
   }
 
   return (
-    <section className="profile-section">
-      <div className="profile-container">
-        <div className="profile-card">
-          <div className="profile-card-left">
-            <img 
-              src={userData.image}
-              alt="Avatar" 
-              className="profile-avatar" 
-            />
-            {isEditing ? (
+    <>
+    <div className="profile-container">
+      <div className="profile-card">
+        <button className="edit-icon" onClick={handleEditToggle}>
+          Edit
+        </button>
+        <img
+          src={
+            avatarUrl ||
+            userData.avatar ||
+            "https://api.multiavatar.com/Binx Bond.svg"
+          }
+          alt="Avatar"
+          className="profile-avatar"
+          onClick={generateRandomAvatar}
+        />
+        {isEditing ? (
+          <input
+            name="name"
+            value={editData.name}
+            onChange={handleChange}
+            className="profile-input"
+          />
+        ) : (
+          <h3>{userData.name}</h3>
+        )}
+        <div className="profile-info">
+          <hr />
+          {isEditing ? (
+            <>
               <input
-                type="text"
-                name="name"
-                value={editData.name}
+                name="email"
+                value={editData.email}
                 onChange={handleChange}
-                style={{ color: 'black' }}
+                 placeholder="enter the Email"
+                className="profile-input"
               />
-            ) : (
-              <h1>{userData.name}</h1>
-            )}
-            <FaRegEdit fontSize={35} onClick={handleEditToggle} style={{ cursor: 'pointer' }} />
-          </div>
-          <div className="profile-card-body">
-            <h6>Information</h6>
-            <hr className="profile-hr" />
-            <div className="profile-info">
-              <div className="profile-info-item">
-                <h6>Email</h6>
-                {isEditing ? (
-                  <input
-                    type="email"
-                    name="email"
-                    value={editData.email}
-                    onChange={handleChange}
-                  />
-                ) : (
-                  <p className="text-muted">{userData.email}</p>
-                )}
-              </div>
-              <div className="profile-info-item">
-                <h6>Phone</h6>
-                {isEditing ? (
-                  <input
-                    type="tel"
-                    name="number"
-                    value={editData.number}
-                    onChange={handleChange}
-                  />
-                ) : (
-                  <p className="text-muted">{userData.number}</p>
-                )}
-              </div>
-              <div className="profile-info-item">
-                <h6>Service</h6>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    name="service"
-                    value={editData.service}
-                    onChange={handleChange}
-                  />
-                ) : (
-                  <p className="text-muted">{userData.service}</p>
-                )}
-              </div>
-              <div className="profile-info-item">
-                <h6>Description</h6>
-                {isEditing ? (
-                  <textarea
-                    name="description"
-                    value={editData.description}
-                    onChange={handleChange}
-                  />
-                ) : (
-                  <p className="text-muted">{userData.description}</p>
-                )}
-              </div>
+              <input
+                name="number"
+                value={editData.number}
+                onChange={handleChange}
+                  placeholder="enter the Mobile Number"
+                className="profile-input"
+              />
+              <input
+                name="address"
+                value={editData.address}
+                onChange={handleChange}
+                placeholder="enter the Address"
+                className="profile-input"
+              />
+              <input
+                name="pincode"
+                value={editData.pincode}
+                onChange={handleChange}
+                  placeholder="enter the Zipcode"
+                className="profile-input"
+              />
+              <input
+                name="price"
+                value={editData.price}
+                className="profile-input"
+                placeholder="enter the Price"
+              />
+            </>
+          ) : (
+            <>
+              <p>
+                <strong>Email:</strong> {userData.email}
+              </p>
+              <p>
+                <strong>Phone:</strong> {userData.number}
+              </p>
+              <p>
+                <strong>Address:</strong> {userData.addresses[0].address}
+              </p>
+              <p>
+                <strong>Zipcode:</strong> {userData.addresses[0].pincode}
+              </p>
+            </>
+          )}
+          {isEditing && (
+            <div className="edit-buttons">
+              <button onClick={handleSave}>Save</button>
+              <button onClick={handleEditToggle}>Cancel</button>
             </div>
-
-            {isEditing && (
-              <div className="profile-actions">
-                <button onClick={handleSave}>Save</button>
-                <button onClick={handleEditToggle}>Cancel</button>
-              </div>
-            )}
-          </div>
+          )}
         </div>
+      
       </div>
-    </section>
+    
+    </div>
+      <button className="signout-button" onClick={handleSignout}>
+      Sign Out
+    </button>
+    </>
   );
 };
 

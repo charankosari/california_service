@@ -22,11 +22,11 @@ const Signup = () => {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
+const url='http://localhost:9999'
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('https://california-server.onrender.com/api/c3/user/register', formData);
+      await axios.post(`${url}/api/c3/user/register`, formData);
       navigate('/'); // Redirect on success
     } catch (error) {
       console.error('Signup error:', error);
