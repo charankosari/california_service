@@ -37,15 +37,16 @@ const Header = ({ login, handleLogin }) => {
               </ButtonGroup>
 
               <HStack>
-                <Button size='sm' variant='solid'>Contact</Button>
+              <Link to='/booking'>  <Button size='sm' variant='solid'>My Booking</Button></Link>
                 {login ? (
                   <>
                   <Link to='/profile'>  <CgProfile fontSize={40} style={{ marginLeft: '20px' }} /></Link>
                     <Button size='sm' variant='outline' onClick={handleLogin}>Logout</Button>
                   </>
-                ) : (
+                ) : ( 
                   <Button size='sm' variant='outline'><Link to='/'>Sign in</Link></Button>
                 )}
+
               </HStack>
             </>
           ) : (

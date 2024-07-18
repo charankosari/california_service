@@ -13,6 +13,7 @@ import Signup from './components/Auth/Signup';
 import { useState } from 'react';
 import Profile from './Profile';
 import Chat from './Chat';
+import BookingList from './components/bookings/BookingList';
 
 const App = () => {
     const [login,setLogin] = useState(false)
@@ -28,6 +29,9 @@ const App = () => {
                    
                      <Route path="/signup" element={<Signup login={login} handleLogin={handleLogin} />} />
                      <Route path='/profile' element={<Profile/>}/>
+                     <Route path='/booking' element={<BookingList/>}/>
+
+
                      
 
                 </Routes>

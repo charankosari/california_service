@@ -59,15 +59,7 @@ const Profile = ({ login }) => {
       if (editData.number !== userData.number) {
         updatedData.number = editData.number;
       }
-      if (
-        editData.address !== userData.address ||
-        editData.pincode !== userData.pincode
-      ) {
-        updatedData.address = {
-          address: editData.address,
-          pincode: editData.pincode,
-        };
-      }
+      
       await axios.put(`${url}/api/c3/ser/me/profileupdate`, updatedData, {
         headers: {
           Authorization: `Bearer ${jwtToken}`,
@@ -177,12 +169,12 @@ const Profile = ({ login }) => {
               <p>
                 <strong>Phone:</strong> {userData.number}
               </p>
-              <p>
+              {/* <p>
                 <strong>Address:</strong> {userData.addresses[0].address}
-              </p>
-              <p>
+              </p> */}
+              {/* <p>
                 <strong>Zipcode:</strong> {userData.addresses[0].pincode}
-              </p>
+              </p> */}
             </>
           )}
           {isEditing && (

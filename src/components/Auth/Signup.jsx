@@ -26,7 +26,7 @@ const url='http://localhost:9999'
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${url}/api/c3/user/register`, formData);
+      await axios.post(`${url}/api/c3/ser/register`, formData);
       navigate('/'); // Redirect on success
     } catch (error) {
       console.error('Signup error:', error);
@@ -106,7 +106,7 @@ const url='http://localhost:9999'
           <button type="submit">Signup</button>
         </form>
         <p>
-          Already have an account? <Link to="/login">Login</Link>
+          Already have an account? <Link to="/">Login</Link>
         </p>
       </div>
     </div>
