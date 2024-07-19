@@ -1,198 +1,146 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import "./Profile.css";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import Header from './components/Header/Header';
+import Footer from './components/Footer';
+import './Profile.css'; // Import CSS for styling
 
-const Profile = ({ login }) => {
+const ProfilePage = () => {
   const [userData, setUserData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [editData, setEditData] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [avatarUrl, setAvatarUrl] = useState("");
-  const url = "http://localhost:9999";
+  const [formData, setFormData] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+
+  const jwtToken = localStorage.getItem('token');
+  const url = 'http://localhost:9999';
 
   useEffect(() => {
     const fetchUserData = async () => {
+      setIsLoading(true);
       try {
-        const jwtToken = localStorage.getItem("jwtToken");
-        if (!jwtToken) {
-          throw new Error("JWT token not found in localStorage");
-        }
-
         const response = await axios.get(`${url}/api/c3/ser/me`, {
           headers: {
             Authorization: `Bearer ${jwtToken}`,
           },
         });
         setUserData(response.data.ser);
-        setEditData(response.data.ser);
-        setAvatarUrl(response.data.ser.image || "");
-        setLoading(false);
+        setFormData(response.data.ser);
       } catch (error) {
-        console.error("Error fetching user data:", error);
-        setLoading(false);
+        console.error('Error fetching user data:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchUserData();
-  }, []);
-
-  const handleEditToggle = () => {
-    setIsEditing(!isEditing);
-  };
+  }, [jwtToken]);
 
   const handleChange = (e) => {
-    setEditData({ ...editData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleEdit = () => {
+    setIsEditing(true);
   };
 
   const handleSave = async () => {
+    setIsLoading(true);
     try {
-      const jwtToken = localStorage.getItem("jwtToken");
-
-      const updatedData = {};
-
-      if (editData.name !== userData.name) {
-        updatedData.name = editData.name;
-      }
-      if (editData.email !== userData.email) {
-        updatedData.email = editData.email;
-      }
-      if (editData.number !== userData.number) {
-        updatedData.number = editData.number;
-      }
-      
-      await axios.put(`${url}/api/c3/ser/me/profileupdate`, updatedData, {
+      await axios.put(`${url}/api/c3/ser/me`, formData, {
         headers: {
           Authorization: `Bearer ${jwtToken}`,
         },
       });
-
-      setUserData({ ...userData, ...updatedData });
+      setUserData(formData);
       setIsEditing(false);
     } catch (error) {
-      console.error("Error updating user data:", error);
+      console.error('Error updating user data:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const generateRandomAvatar = () => {
-    const randomSeed = Math.random().toString(36).substring(7);
-    setAvatarUrl(`https://api.multiavatar.com/${randomSeed}.svg`);
+  const closeModal = () => {
+    setIsEditing(false);
   };
 
-  const handleSignout = () => {
-    localStorage.removeItem("jwtToken");
-    window.location.href = "/login";
-  };
+  if (isLoading) return <div className="loading-spinner"></div>;
 
-  if (loading) {
-    return (
-      <div className="loading">
-        <div className="spinner"></div>
-      </div>
-    );
-  }
-
-  if (!userData) {
-    return <h2>No user data available</h2>;
-  }
+  if (!userData) return <div className="loading-spinner"></div>;
 
   return (
     <>
-    <div className="profile-container">
-      <div className="profile-card">
-        <button className="edit-icon" onClick={handleEditToggle}>
-          Edit
-        </button>
-        <img
-          src={
-            avatarUrl ||
-            userData.avatar ||
-            "https://api.multiavatar.com/Binx Bond.svg"
-          }
-          alt="Avatar"
-          className="profile-avatar"
-          onClick={generateRandomAvatar}
-        />
-        {isEditing ? (
-          <input
-            name="name"
-            value={editData.name}
-            onChange={handleChange}
-            className="profile-input"
-          />
-        ) : (
-          <h3>{userData.name}</h3>
-        )}
-        <div className="profile-info">
-          <hr />
-          {isEditing ? (
-            <>
-              <input
-                name="email"
-                value={editData.email}
-                onChange={handleChange}
-                 placeholder="enter the Email"
-                className="profile-input"
-              />
-              <input
-                name="number"
-                value={editData.number}
-                onChange={handleChange}
-                  placeholder="enter the Mobile Number"
-                className="profile-input"
-              />
-              <input
-                name="address"
-                value={editData.address}
-                onChange={handleChange}
-                placeholder="enter the Address"
-                className="profile-input"
-              />
-              <input
-                name="pincode"
-                value={editData.pincode}
-                onChange={handleChange}
-                  placeholder="enter the Zipcode"
-                className="profile-input"
-              />
-              <input
-                name="price"
-                value={editData.price}
-                className="profile-input"
-                placeholder="enter the Price"
-              />
-            </>
-          ) : (
-            <>
-              <p>
-                <strong>Email:</strong> {userData.email}
-              </p>
-              <p>
-                <strong>Phone:</strong> {userData.number}
-              </p>
-              {/* <p>
-                <strong>Address:</strong> {userData.addresses[0].address}
-              </p> */}
-              {/* <p>
-                <strong>Zipcode:</strong> {userData.addresses[0].pincode}
-              </p> */}
-            </>
-          )}
-          {isEditing && (
-            <div className="edit-buttons">
-              <button onClick={handleSave}>Save</button>
-              <button onClick={handleEditToggle}>Cancel</button>
+      <Header />
+      <div className="profile-container">
+        <div className="profile-card">
+          <div className="profile-image">
+            <img src={userData.image} alt={userData.name} />
+          </div>
+          <div className="profile-details">
+            <div className="profile-field">
+              <strong>Name:</strong> {userData.name}
             </div>
-          )}
+            <div className="profile-field">
+              <strong>Email:</strong> {userData.email}
+            </div>
+            <div className="profile-field">
+              <strong>Number:</strong> {userData.number}
+            </div>
+            <div className="profile-field">
+              <strong>Description:</strong> {userData.description}
+            </div>
+            <div className="profile-field">
+              <strong>Amount:</strong> {userData.amount}
+            </div>
+            <div className="profile-field">
+              <strong>Address:</strong> {userData.addresses[0].address} {userData.addresses[0].pincode}
+            </div>
+            <button className="edit-button" onClick={handleEdit}>
+              Edit
+            </button>
+          </div>
         </div>
-      
+        {isEditing && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h2>Edit Profile</h2>
+              <form>
+                <div className="modal-field">
+                  <label>Email:</label>
+                  <input name="email" value={formData.email} onChange={handleChange} />
+                </div>
+                <div className="modal-field">
+                  <label>Number:</label>
+                  <input name="number" type="tel" value={formData.number} onChange={handleChange} />
+                </div>
+                <div className="modal-field">
+                  <label>Description:</label>
+                  <textarea name="description" value={formData.description} onChange={handleChange} />
+                </div>
+                <div className="modal-field">
+                  <label>Amount:</label>
+                  <input name="amount" type="number" value={formData.amount} onChange={handleChange} />
+                </div>
+                <div className="modal-field">
+                  <label>Address:</label>
+                  <input name="address" value={formData.addresses} onChange={handleChange} placeholder="Address" />
+                  <input name="pincode" value={formData.pincode} onChange={handleChange} placeholder="Pincode" />
+                </div>
+                <div className="modal-buttons">
+                  <button type="button" onClick={handleSave} disabled={isLoading}>
+                    {isLoading ? 'Saving...' : 'Save'}
+                  </button>
+                  <button type="button" onClick={closeModal}>
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
-    
-    </div>
-      <button className="signout-button" onClick={handleSignout}>
-      Sign Out
-    </button>
     </>
   );
 };
 
-export default Profile;
+export default ProfilePage;

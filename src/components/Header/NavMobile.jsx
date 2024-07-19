@@ -2,7 +2,7 @@ import { useRef } from 'react';
 
 import { ButtonGroup, VStack, Input, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, Button, IconButton, useDisclosure, Center } from '@chakra-ui/react';
 import { FiMenu } from 'react-icons/fi';
-
+import { Link, useNavigate } from 'react-router-dom';
 const NavMobile = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = useRef();
@@ -23,13 +23,9 @@ const NavMobile = () => {
                 </Center>
                 <DrawerBody px='14' mt='4'>
                     <VStack as='nav' spacing='8' alignItems='left'>
-                        {
-                            ['Home', 'Features', 'About Us'].map((item)=>(
-                                <Button variant='link' key={item}>{item}</Button>
-                            ))
-                        }
-                        <Button size='sm' variant='solid'>Contact</Button>
-                        <Button size='sm' variant='outline'>Sign up</Button>
+                    <Link to='/booking'>
+                  <Button size='sm' variant='solid'>My Booking</Button>
+                </Link>
                     </VStack>
                 </DrawerBody>
             </DrawerContent>
