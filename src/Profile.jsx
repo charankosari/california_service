@@ -7,8 +7,12 @@ import './Profile.css'; // Import CSS for styling
 const ProfilePage = () => {
   const [userData, setUserData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [isAddingSession, setIsAddingSession] = useState(false);
   const [formData, setFormData] = useState({});
+  const [sessionData, setSessionData] = useState({ date: '', days: '' });
   const [isLoading, setIsLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const jwtToken = localStorage.getItem('token');
   const url = 'http://localhost:9999';
@@ -62,6 +66,37 @@ const ProfilePage = () => {
 
   const closeModal = () => {
     setIsEditing(false);
+    setIsAddingSession(false);
+    setSuccessMessage('');
+    setErrorMessage('');
+  };
+
+  const handleSessionChange = (e) => {
+    const { name, value } = e.target;
+    setSessionData({ ...sessionData, [name]: value });
+  };
+
+  const handleAddSessions = () => {
+    setIsAddingSession(true);
+  };
+
+  const handleSubmitSession = async () => {
+    setIsLoading(true);
+    try {
+      await axios.post(`${url}/api/c3/ser/slots`, sessionData, {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+        },
+      });
+      setSuccessMessage('Session added successfully!');
+      setSessionData({ date: '', days: '' });
+    } catch (error) {
+      console.error('Error adding session:', error);
+      setErrorMessage('Error adding session.');
+    } finally {
+      setIsLoading(false);
+      setIsAddingSession(false);
+    }
   };
 
   if (isLoading) return <div className="loading-spinner"></div>;
@@ -90,16 +125,22 @@ const ProfilePage = () => {
               <strong>Description:</strong> {userData.description}
             </div>
             <div className="profile-field">
-              <strong>Amount:</strong> {userData.amount}
+              <strong>Amount:</strong> ${userData.amount}
             </div>
             <div className="profile-field">
-              <strong>Address:</strong> {userData.addresses[0].address} {userData.addresses[0].pincode}
+              <strong>Address:</strong> {userData.addresses[0].address}, {userData.addresses[0].pincode}
             </div>
+            <div style={{display:'flex',flexDirection:'row',gap:'20px',justifyContent:'center'}}>
             <button className="edit-button" onClick={handleEdit}>
               Edit
             </button>
+            <button className="add-sessions-button" onClick={handleAddSessions}>
+              Add Sessions
+            </button>
+            </div>
           </div>
         </div>
+
         {isEditing && (
           <div className="modal-overlay">
             <div className="modal">
@@ -123,8 +164,8 @@ const ProfilePage = () => {
                 </div>
                 <div className="modal-field">
                   <label>Address:</label>
-                  <input name="address" value={formData.addresses} onChange={handleChange} placeholder="Address" />
-                  <input name="pincode" value={formData.pincode} onChange={handleChange} placeholder="Pincode" />
+                  <input name="address" value={formData.addresses[0].address} onChange={handleChange} placeholder="Address" />
+                  <input name="pincode" value={formData.addresses[0].pincode} onChange={handleChange} placeholder="Pincode" />
                 </div>
                 <div className="modal-buttons">
                   <button type="button" onClick={handleSave} disabled={isLoading}>
@@ -138,7 +179,46 @@ const ProfilePage = () => {
             </div>
           </div>
         )}
+
+        {isAddingSession && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h2>Add Session</h2>
+              <form>
+                <div className="modal-field">
+                  <label>Date:</label>
+                  <input
+                    type="date"
+                    name="date"
+                    value={sessionData.date}
+                    onChange={handleSessionChange}
+                  />
+                </div>
+                <div className="modal-field">
+                  <label>Days:</label>
+                  <input
+                    type="number"
+                    name="days"
+                    value={sessionData.days}
+                    onChange={handleSessionChange}
+                  />
+                </div>
+                <div className="modal-buttons">
+                  <button type="button" onClick={handleSubmitSession} disabled={isLoading}>
+                    {isLoading ? 'Adding...' : 'Add'}
+                  </button>
+                  <button type="button" onClick={closeModal}>
+                    Cancel
+                  </button>
+                </div>
+                {successMessage && <div className="success-message">{successMessage}</div>}
+                {errorMessage && <div className="error-message">{errorMessage}</div>}
+              </form>
+            </div>
+          </div>
+        )}
       </div>
+      <Footer />
     </>
   );
 };

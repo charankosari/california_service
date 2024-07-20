@@ -24,7 +24,7 @@ const Header = ({ handleLogin }) => {
   return (
     <chakra.header id="header" borderBottom='1px solid rgb(0,0,0,0.3)'>
       <Flex w='100%' py='5' align='center' justify='space-between'>
-        <Link to='/'>
+        <Link to='/profile'>
           <Heading fontSize='xl' color={'#fff'} >
             <img src={logo} alt="" style={{ height: '60px' }} />
           </Heading>
@@ -32,8 +32,6 @@ const Header = ({ handleLogin }) => {
         {
           isDesktop ? (
             <>
-
-
               <HStack>
                 <Link to='/booking'>
                   <Button size='sm' variant='solid'>My Booking</Button>

@@ -4,7 +4,7 @@ import Login from './components/Auth/Login';
 import Signup from './components/Auth/Signup';
 import { useState } from 'react';
 import Profile from './Profile';
-import BookingList from './components/bookings/BookingList';
+import BookingsPage from './Booking';
 const App = () => {
     const [login,setLogin] = useState(false)
     const handleLogin= ()=>{
@@ -18,7 +18,7 @@ const App = () => {
                    
                      <Route path="/signup" element={<Signup login={login} handleLogin={handleLogin} />} />
                      <Route path='/profile' element={<Profile/>}/>
-                     <Route path='/booking' element={<BookingList/>}/>
+                     <Route path='/booking' element={<BookingsPage/>}/>
                 </Routes>
             </Container>
         </>
