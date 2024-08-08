@@ -207,15 +207,21 @@ const Signup = () => {
                 />
                 <label>Days</label>
               </div>
-              <div className="input-container">
-                <input
-                  type="text"
+              <div className="input-container" style={{border:'#ccc 1px solid',padding:'10px',marginBottom:'10px'}}>
+                <select
                   name="service"
-                  placeholder=" "
                   value={formData.service}
                   onChange={handleChange}
                   required
-                />
+                  style={{marginLeft:'100px'}}
+                >
+                  <option value="" disabled>Select Service Type</option>
+                  <option value="air conditioner repair">Air Conditioner Repair</option>
+                  <option value="landscaping">Landscaping</option>
+                  <option value="electricians">Electricians</option>
+                  <option value="home cleaners">Home Cleaners</option>
+                  <option value="plumbers">Plumbers</option>
+                </select>
                 <label>Service Type</label>
               </div>
               <div className="input-container">

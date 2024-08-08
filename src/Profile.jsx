@@ -47,15 +47,30 @@ const ProfilePage = () => {
     setIsEditing(true);
   };
 
+  const getModifiedData = () => {
+    const modifiedData = {};
+    for (const key in formData) {
+      if (formData[key] !== userData[key]) {
+        modifiedData[key] = formData[key];
+      }
+    }
+    return modifiedData;
+  };
+
   const handleSave = async () => {
+    const modifiedData = getModifiedData();
+    if (Object.keys(modifiedData).length === 0) {
+      setIsEditing(false);
+      return;
+    }
     setIsLoading(true);
     try {
-      await axios.put(`${url}/api/c3/ser/me`, formData, {
+      await axios.put(`${url}/api/c3/ser/me/profileupdate`, modifiedData, {
         headers: {
           Authorization: `Bearer ${jwtToken}`,
         },
       });
-      setUserData(formData);
+      setUserData({ ...userData, ...modifiedData });
       setIsEditing(false);
     } catch (error) {
       console.error('Error updating user data:', error);
