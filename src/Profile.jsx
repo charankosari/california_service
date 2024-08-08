@@ -13,9 +13,9 @@ const ProfilePage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-
+  const [isDisabled, setIsDisabled] = useState(false);
   const jwtToken = localStorage.getItem('token');
-  const url = 'http://localhost:9999';
+  const url = 'https://oneapp.trivedagroup.com';
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -26,8 +26,14 @@ const ProfilePage = () => {
             Authorization: `Bearer ${jwtToken}`,
           },
         });
-        setUserData(response.data.ser);
-        setFormData(response.data.ser);
+         if (response.data.role === 'disabled') {
+          setIsDisabled(true);
+
+        } else {
+          setUserData(response.data.ser);
+          setFormData(response.data.ser);
+        }
+       
       } catch (error) {
         console.error('Error fetching user data:', error);
       } finally {
@@ -113,6 +119,16 @@ const ProfilePage = () => {
       setIsAddingSession(false);
     }
   };
+  if (isDisabled) {
+    return (
+      <div className="disabled-modal-overlay">
+        <div className="disabled-modal">
+          <h2>Your account is disabled</h2>
+          <p>Please contact the admin to enable your account.</p>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) return <div className="loading-spinner"></div>;
 

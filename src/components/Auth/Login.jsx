@@ -8,7 +8,7 @@ const Login = ({ handleLogin }) => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const url = 'http://localhost:9999';
+  const url = 'https://oneapp.trivedagroup.com';
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });

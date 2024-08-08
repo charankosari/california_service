@@ -9,7 +9,7 @@ const BookingsPage = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const jwtToken = localStorage.getItem('token');
-  const url = 'http://localhost:9999';
+  const url = 'https://oneapp.trivedagroup.com';
 
   useEffect(() => {
     const fetchBookings = async () => {
