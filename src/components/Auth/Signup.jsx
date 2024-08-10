@@ -24,7 +24,7 @@ const Signup = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
-  const url = 'http://localhost:9999';
+  const url = 'https://oneapp.trivedagroup.com';
 
   const handleChange = (e) => {
     const { name, value } = e.target;
