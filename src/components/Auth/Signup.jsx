@@ -5,6 +5,7 @@ import './Signup.css';
 
 const Signup = () => {
   const navigate = useNavigate();
+  const [cp,setCp]=useState('')
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -43,6 +44,10 @@ const Signup = () => {
 
   const handleNext = (e) => {
     e.preventDefault();
+    if(cp!==formData.password){
+      alert('Password and confirm password should be same.');
+      return;
+    }
     const isFormValid = validateFirstStep();
     if (isFormValid) {
       setCurrentStep(2);
@@ -59,7 +64,7 @@ const Signup = () => {
       password.length >= 8 && 
       number &&
       addresses.address &&
-      addresses.pincode
+      addresses.pincode 
     );
   };
 
@@ -71,6 +76,11 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    if(cp!==formData.password){
+      alert('Password and confirm password should be same');
+      setIsLoading(false);
+      return
+    }
     try {
       await axios.post(`${url}/api/c3/ser/register`, formData);
       navigate('/'); // Redirect on success
@@ -125,6 +135,17 @@ const Signup = () => {
               </div>
               <div className="input-container">
                 <input
+                  type="password"
+                  name="password"
+                  placeholder=" "
+                  value={cp}
+                  onChange={(e)=>{setCp(e.target.value)}}
+                  required
+                />
+              <label>Confirm Password</label>
+              </div>
+              <div className="input-container">
+                <input
                   type="tel"
                   name="number"
                   placeholder=" "
@@ -132,6 +153,7 @@ const Signup = () => {
                   onChange={handleChange}
                   required
                 />
+
                 <label>Phone Number</label>
               </div>
               <div className="input-container">
